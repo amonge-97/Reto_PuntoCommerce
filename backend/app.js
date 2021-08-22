@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { PORT, MONGODB_URL } from "./config.js";
 
-import userRoute from "./routes/userRoute";
+import userRoute from "./routes/userRoute.js";
 
 mongoose
   .connect(MONGODB_URL, {
@@ -13,6 +13,9 @@ mongoose
   .catch((err) => console.log(err.reason));
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use("/api/user/", userRoute);
 

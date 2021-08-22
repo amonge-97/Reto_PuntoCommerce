@@ -15,6 +15,35 @@ router.get("/all", async (req, res) => {
   }
 });
 
+router.get("/countCharactersInEmails", async (req, res) => {
+  const users = await User.find({}, { _id: 0, email: 1 });
+  if (users.length) {
+    let counting = {};
+    users.forEach(({ email }) => {
+      let repeated = [];
+      for (let i = 0; i < email.length; i++) {
+        const character = email[i].toUpperCase();
+        const regex = new RegExp("[" + character + "]", "g");
+        if (!repeated.find((r) => r === character)) {
+          repeated.push(character);
+          if (counting[character]) {
+            counting[character] += email.toUpperCase().match(regex).length;
+          } else {
+            console.log(email, character);
+            counting[character] = email.toUpperCase().match(regex).length;
+          }
+        }
+      }
+    });
+    res.status(200).send(counting);
+  } else {
+    res.status(400).send({
+      error: true,
+      message: "No users to work!",
+    });
+  }
+});
+
 router.post("/add", async (req, res) => {
   const user = new User({
     ...req.body,

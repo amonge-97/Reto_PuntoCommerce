@@ -44,6 +44,57 @@ router.get("/countCharactersInEmails", async (req, res) => {
   }
 });
 
+router.get("/possibleDuplication/:emailToMatch", async (req, res) => {
+  const emailToMatch = req.params.emailToMatch;
+
+  const emailVerification = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+  const separators = /[_|-|.]/g;
+  if (!emailVerification.test(emailToMatch)) {
+    res.status(400).send({ message: "Invalid email." });
+    return;
+  }
+
+  let users = await User.find({}, { _id: 0, email: 1 });
+
+  const firstPartEmail = emailToMatch.slice(0, emailToMatch.indexOf("@"));
+  let noSeparators = firstPartEmail.split(separators);
+  if (noSeparators.length === 0) {
+    noSeparators = [firstPartEmail];
+  }
+
+  let possibleDuplication = [];
+
+  noSeparators.forEach((phrase) => {
+    const userObj = users.find((u) => u.email.includes(phrase));
+    if (userObj) {
+      users = users.filter((u) => u !== userObj);
+      possibleDuplication.push(userObj.email);
+    }
+
+    if (phrase.length > 4) {
+      for (let i = 4; i < phrase.length; i++) {
+        const newPhrase = phrase.slice(0, i);
+        const arrPD = users.filter((u) => u.email.includes(newPhrase));
+        arrPD.forEach((apd) => {
+            users = users.filter((u) => u !== apd);
+            possibleDuplication.push(apd.email);
+        });
+      }
+
+      for (let i = phrase.length - 4; i >= 0; i--) {
+        const newPhrase = phrase.slice(i, phrase.length);
+        const arrPD = users.filter((u) => u.email.includes(newPhrase));
+        arrPD.forEach((apd) => {
+            users = users.filter((u) => u !== apd);
+            possibleDuplication.push(apd.email);
+        });
+      }
+    }
+  });
+
+  res.status(200).send(possibleDuplication);
+});
+
 router.post("/add", async (req, res) => {
   const user = new User({
     ...req.body,

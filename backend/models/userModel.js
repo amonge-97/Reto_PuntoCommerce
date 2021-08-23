@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
+// Schema to define the content of the users collection. 
+
 const userSchema = new Schema({
   name: { type: String, required: true },
   username: { type: String, required: true, unique: true },

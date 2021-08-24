@@ -8,3 +8,8 @@ Create anoter endpoint which quantifies each character on the email's field from
 
 ### Step 3: 
 Create a third endpoint thah will return a list of all potentially duplciated emails. You are free to define what a potentially duplicated email is but here are a few suggestions. jonh.doe@ibm.com jondoe@ibm.com jon-doe@ibm.com homer@simpsons.com homero@simpsons.mx.
+
+## Run the following commands
+
+1. npm install
+2. npm start

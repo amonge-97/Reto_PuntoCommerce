@@ -1,6 +1,6 @@
 import express from "express";
 import User from "../models/userModel.js";
-
+import { bubbleSort_JSON } from "../utils.js"
 const router = express.Router();
 
 router.get("/all", async (req, res) => { // Step #1 Get all users and send basic data
@@ -8,8 +8,8 @@ router.get("/all", async (req, res) => { // Step #1 Get all users and send basic
   if (users) {
     var allUsers = [];
     users.forEach((user) => {
-      const { __v, ...rest } = user._doc; // Separate data that is not required
-      allUsers.push({ ...rest });
+      const { __v, _id: id, ...rest } = user._doc; // Separate data that is not required
+      allUsers.push({ ...rest, id });
     });
     res.status(200).send(allUsers);
   }
@@ -34,6 +34,7 @@ router.get("/countCharactersInEmails", async (req, res) => { // Step #2 Quantifi
         }
       }
     });
+    counting = bubbleSort_JSON(counting); //Sorting the final count with bubble.
     res.status(200).send(counting);
   } else { // There are not users on the collection
     res.status(400).send({

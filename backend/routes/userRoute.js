@@ -64,17 +64,17 @@ router.get("/possibleDuplication/:emailToMatch", async (req, res) => { // Step #
   let possibleDuplication = []; // Final array
 
   noSeparators.forEach((phrase) => { // Work with each word of the email
-    const userObj = users.find((u) => u.email.includes(phrase)); //First try to find emails with the whole word.
-    if (userObj) {
+    const arrPD = users.filter((u) => u.email.includes(phrase)); //First try to find emails with the whole word.
+    arrPD.forEach((apd) => {
       users = users.filter((u) => u !== userObj); // If there are a match, remove it from all candidates (emails).
       possibleDuplication.push(userObj.email); // And add to the final Array, this is a possible duplicate email.
-    }
+    })
 
     if (phrase.length > 4) { // If the current word has more than 4 letters 
       for (let i = 4; i < phrase.length; i++) { // Cuting the word from begining to the end - 1 to find more matches, example: HolaMundo (Hola, HolaM, HolaMu, HolaMun, HolaMund).
         const newPhrase = phrase.slice(0, i); // Cuting the word.
-        const arrPD = users.filter((u) => u.email.includes(newPhrase));
-        arrPD.forEach((apd) => { // Same process to add a match 
+        const arrPD2 = users.filter((u) => u.email.includes(newPhrase));
+        arrPD2.forEach((apd) => { // Same process to add a match 
             users = users.filter((u) => u !== apd);
             possibleDuplication.push(apd.email);
         });
@@ -82,8 +82,8 @@ router.get("/possibleDuplication/:emailToMatch", async (req, res) => { // Step #
 
       for (let i = phrase.length - 4; i >= 0; i--) { // Cuting the word from end to the begining - 1 to find more matches, example: HolaMundo (undo, Mundo, aMundo, laMundo, olaMundo).
         const newPhrase = phrase.slice(i, phrase.length); // Cuting the word.
-        const arrPD = users.filter((u) => u.email.includes(newPhrase));
-        arrPD.forEach((apd) => { // Same process to add a match 
+        const arrPD2 = users.filter((u) => u.email.includes(newPhrase));
+        arrPD2.forEach((apd) => { // Same process to add a match 
             users = users.filter((u) => u !== apd);
             possibleDuplication.push(apd.email);
         });

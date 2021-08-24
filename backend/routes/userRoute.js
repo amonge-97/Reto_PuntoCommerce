@@ -67,8 +67,8 @@ router.get("/possibleDuplication/:emailToMatch", async (req, res) => { // Step #
   noSeparators.forEach((phrase) => { // Work with each word of the email
     const arrPD = users.filter((u) => u.email.includes(phrase)); //First try to find emails with the whole word.
     arrPD.forEach((apd) => {
-      users = users.filter((u) => u !== userObj); // If there are a match, remove it from all candidates (emails).
-      possibleDuplication.push(userObj.email); // And add to the final Array, this is a possible duplicate email.
+      users = users.filter((u) => u !== apd); // If there are a match, remove it from all candidates (emails).
+      possibleDuplication.push(apd.email); // And add to the final Array, this is a possible duplicate email.
     })
 
     if (phrase.length > 4) { // If the current word has more than 4 letters 

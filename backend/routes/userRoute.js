@@ -95,6 +95,12 @@ router.get("/possibleDuplication/:emailToMatch", async (req, res) => { // Step #
 });
 
 router.post("/add", async (req, res) => { // Endpoint to add new users in the collection
+  const emailVerification = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+  if (!emailVerification.test(req.body.email)) {
+    res.status(400).send({ message: "Invalid email." });
+    return;
+  }
+
   const user = new User({
     ...req.body,
   });
